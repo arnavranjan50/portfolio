@@ -78,7 +78,7 @@ export default function Contact() {
 
       {/* Email CTA */}
       <a
-        href="mailto:arnavranjan@example.com"
+        href="mailto:arnavranjan50@gmail.com"
         className="c-anim"
         data-magnetic
         style={{
@@ -142,7 +142,7 @@ export default function Contact() {
           FREQ: 121.5 MHz · CHANNEL: OPEN · ENCRYPTION: NONE
         </div>
         <div style={{ fontSize: "0.55rem", letterSpacing: "0.15em", color: "var(--iaf-dim)", marginTop: "4px" }}>
-          © 2025 ARNAV RANJAN · ALL SYSTEMS NOMINAL
+          © 2026 ARNAV RANJAN · ALL SYSTEMS NOMINAL
         </div>
       </div>
     </section>
