@@ -107,7 +107,8 @@ export default function Contact() {
 
       {/* Social links */}
       <div className="c-anim" style={{
-        display: "flex", gap: "16px", marginTop: "48px", opacity: 0,
+        display: "flex", flexWrap: "wrap", gap: "16px", marginTop: "48px", opacity: 0,
+        justifyContent: "center",
       }}>
         {socials.map((s) => (
           <a
@@ -137,6 +138,7 @@ export default function Contact() {
       {/* Footer */}
       <div className="c-anim" style={{
         marginTop: "56px", textAlign: "center", opacity: 0,
+        paddingBottom: "60px",
       }}>
         <div style={{ fontSize: "0.55rem", letterSpacing: "0.2em", color: "var(--iaf-dim)" }}>
           FREQ: 121.5 MHz · CHANNEL: OPEN · ENCRYPTION: NONE

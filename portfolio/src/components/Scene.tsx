@@ -1,5 +1,5 @@
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useRef, useEffect } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useRef, useEffect, useState } from "react";
 import { Environment, ContactShadows, useGLTF, Center } from "@react-three/drei";
 import type { Group } from "three";
 
@@ -29,6 +29,22 @@ function Model() {
   );
 }
 
+/* Adjust camera for mobile */
+function CameraAdjust() {
+  const { camera } = useThree();
+  const [isMobile] = useState(() => window.innerWidth <= 768);
+
+  useEffect(() => {
+    if (isMobile) {
+      camera.position.set(-0.5, 1.5, 12);
+      (camera as import("three").PerspectiveCamera).fov = 60;
+      camera.updateProjectionMatrix();
+    }
+  }, [camera, isMobile]);
+
+  return null;
+}
+
 useGLTF.preload("/mig-29_-_fighter_jet_-_free.glb");
 
 export default function Scene() {
@@ -37,8 +53,22 @@ export default function Scene() {
       globalMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       globalMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
     };
+
+    // Touch support for mobile
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        globalMouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+        globalMouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+      }
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove);
+    };
   }, []);
 
   return (
@@ -46,7 +76,9 @@ export default function Scene() {
       camera={{ position: [-1, 1.5, 8], fov: 55 }}
       gl={{ antialias: true, alpha: true }}
       style={{ background: "transparent", width: "100%", height: "100%", pointerEvents: "none" }}
+      dpr={[1, Math.min(window.devicePixelRatio, 2)]}
     >
+      <CameraAdjust />
       <directionalLight position={[5, 5, 5]} intensity={2} color="#ffffff" castShadow />
       <directionalLight position={[-3, 2, -2]} intensity={0.8} color="#4488ff" />
       <directionalLight position={[0, -3, -5]} intensity={1.2} color="#00f0ff" />

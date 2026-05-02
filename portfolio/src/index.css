@@ -329,3 +329,115 @@ body::before {
   letter-spacing: 0.08em;
   font-size: 0.8rem;
 }
+
+/* ===== MOBILE RESPONSIVE ===== */
+
+/* Hide custom cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  html, a, button { cursor: auto !important; }
+  .cursor-outer, .cursor-inner { display: none !important; }
+}
+
+/* Tablet & below */
+@media (max-width: 768px) {
+  .iaf-section {
+    padding: 80px 5vw;
+    min-height: auto;
+  }
+
+  /* Navbar mobile */
+  .nav-links-desktop {
+    display: none !important;
+  }
+
+  .nav-hamburger {
+    display: flex !important;
+  }
+
+  .nav-mobile-menu {
+    display: flex !important;
+  }
+
+  /* Hero text sizing */
+  .hero-section .hero-left {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+    text-align: center;
+    padding: 0 5vw;
+  }
+
+  .hero-section .hero-right {
+    position: relative !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  /* Social sidebar → bottom bar */
+  .social-sidebar-mobile {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: 10px 16px !important;
+    background: rgba(5, 5, 8, 0.9) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-top: 1px solid var(--iaf-border) !important;
+    border-radius: 0 !important;
+    z-index: 900 !important;
+  }
+
+  .social-sidebar-mobile .social-line {
+    display: none !important;
+  }
+
+  /* Timeline */
+  .timeline-line {
+    left: 14px;
+  }
+
+  .timeline-dot {
+    left: 9px !important;
+  }
+
+  /* HUD brackets - smaller on mobile */
+  .hud-bracket {
+    width: 16px;
+    height: 16px;
+  }
+
+  .hud-bracket--tl { top: 12px; left: 12px; }
+  .hud-bracket--tr { top: 12px; right: 12px; }
+  .hud-bracket--bl { bottom: 12px; left: 12px; }
+  .hud-bracket--br { bottom: 12px; right: 12px; }
+
+  /* Tags smaller */
+  .iaf-tag {
+    font-size: 0.65rem;
+    padding: 5px 12px;
+  }
+
+  /* Section labels */
+  .section-label {
+    font-size: 0.65rem;
+  }
+
+  .section-code {
+    font-size: 0.55rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .iaf-section {
+    padding: 60px 4vw;
+  }
+}

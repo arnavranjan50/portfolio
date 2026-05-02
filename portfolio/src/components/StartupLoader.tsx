@@ -97,8 +97,8 @@ export default function StartupLoader({ onComplete }: StartupLoaderProps) {
           position: "absolute",
           top: "50%",
           left: "50%",
-          width: "600px",
-          height: "600px",
+          width: "min(600px, 90vw)",
+          height: "min(600px, 90vw)",
           transform: "translate(-50%, -50%)",
           pointerEvents: "none",
         }}
@@ -150,11 +150,11 @@ export default function StartupLoader({ onComplete }: StartupLoaderProps) {
       <div
         style={{
           position: "absolute",
-          top: "40px",
-          left: "40px",
+          top: "clamp(16px, 4vw, 40px)",
+          left: "clamp(16px, 4vw, 40px)",
           display: "flex",
           alignItems: "center",
-          gap: "16px",
+          gap: "12px",
         }}
       >
         {/* IAF Roundel (saffron-white-green) */}
@@ -162,8 +162,8 @@ export default function StartupLoader({ onComplete }: StartupLoaderProps) {
           src="/Indian_Air_Force-Logo.wine.svg"
           alt="IAF Logo"
           style={{
-            width: "48px",
-            height: "48px",
+            width: "clamp(32px, 5vw, 48px)",
+            height: "clamp(32px, 5vw, 48px)",
             objectFit: "contain",
             filter: "drop-shadow(0 0 12px rgba(255, 153, 51, 0.4))",
           }}
@@ -196,8 +196,8 @@ export default function StartupLoader({ onComplete }: StartupLoaderProps) {
       <div
         style={{
           position: "absolute",
-          top: "40px",
-          right: "40px",
+          top: "clamp(16px, 4vw, 40px)",
+          right: "clamp(16px, 4vw, 40px)",
           textAlign: "right",
         }}
       >
@@ -325,9 +325,9 @@ export default function StartupLoader({ onComplete }: StartupLoaderProps) {
       <div
         style={{
           position: "absolute",
-          bottom: "40px",
-          left: "40px",
-          maxWidth: "400px",
+          bottom: "clamp(16px, 4vw, 40px)",
+          left: "clamp(16px, 4vw, 40px)",
+          maxWidth: "min(400px, 60vw)",
         }}
       >
         {statusLines.map((line, i) => (
@@ -360,8 +360,8 @@ export default function StartupLoader({ onComplete }: StartupLoaderProps) {
       <div
         style={{
           position: "absolute",
-          bottom: "40px",
-          right: "40px",
+          bottom: "clamp(16px, 4vw, 40px)",
+          right: "clamp(16px, 4vw, 40px)",
           textAlign: "right",
         }}
       >

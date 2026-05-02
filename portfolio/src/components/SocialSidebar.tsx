@@ -1,6 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= breakpoint);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [breakpoint]);
+  return isMobile;
+}
+
 const socials = [
   {
     label: "GitHub",
@@ -47,6 +58,7 @@ const socials = [
 export default function SocialSidebar() {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [isGroupHovered, setIsGroupHovered] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!sidebarRef.current) return;
@@ -54,9 +66,10 @@ export default function SocialSidebar() {
 
     gsap.fromTo(
       icons,
-      { x: -30, opacity: 0 },
+      { x: isMobile ? 0 : -30, y: isMobile ? 30 : 0, opacity: 0 },
       {
         x: 0,
+        y: 0,
         opacity: 1,
         duration: 0.8,
         stagger: 0.1,
@@ -65,13 +78,15 @@ export default function SocialSidebar() {
       }
     );
 
-    const line = sidebarRef.current.querySelector(".social-line");
-    if (line) {
-      gsap.fromTo(line, { scaleY: 0 }, {
-        scaleY: 1, duration: 0.8, ease: "power3.inOut", delay: 1.2,
-      });
+    if (!isMobile) {
+      const line = sidebarRef.current.querySelector(".social-line");
+      if (line) {
+        gsap.fromTo(line, { scaleY: 0 }, {
+          scaleY: 1, duration: 0.8, ease: "power3.inOut", delay: 1.2,
+        });
+      }
     }
-  }, []);
+  }, [isMobile]);
 
   // When any icon is hovered, glow the entire sidebar group
   const handleGroupEnter = () => setIsGroupHovered(true);
@@ -80,26 +95,38 @@ export default function SocialSidebar() {
   return (
     <div
       ref={sidebarRef}
+      className={isMobile ? "social-sidebar-mobile" : ""}
       onMouseEnter={handleGroupEnter}
       onMouseLeave={handleGroupLeave}
       style={{
         position: "fixed",
-        left: "20px",
+        left: isMobile ? "0" : "20px",
         bottom: 0,
+        right: isMobile ? "0" : "auto",
         zIndex: 900,
         display: "flex",
-        flexDirection: "column",
+        flexDirection: isMobile ? "row" : "column",
         alignItems: "center",
+        justifyContent: isMobile ? "center" : "flex-start",
         gap: "0px",
-        padding: "12px 8px",
-        borderRadius: "24px",
-        background: isGroupHovered ? "rgba(0, 240, 255, 0.04)" : "transparent",
-        boxShadow: isGroupHovered
+        padding: isMobile ? "10px 16px" : "12px 8px",
+        borderRadius: isMobile ? "0" : "24px",
+        background: isMobile
+          ? "rgba(5, 5, 8, 0.9)"
+          : isGroupHovered
+            ? "rgba(0, 240, 255, 0.04)"
+            : "transparent",
+        boxShadow: !isMobile && isGroupHovered
           ? "0 0 30px rgba(0, 240, 255, 0.15), 0 0 60px rgba(0, 240, 255, 0.05), inset 0 0 20px rgba(0, 240, 255, 0.03)"
           : "none",
-        border: isGroupHovered
-          ? "1px solid rgba(0, 240, 255, 0.15)"
-          : "1px solid transparent",
+        border: isMobile
+          ? "none"
+          : isGroupHovered
+            ? "1px solid rgba(0, 240, 255, 0.15)"
+            : "1px solid transparent",
+        borderTop: isMobile ? "1px solid var(--iaf-border)" : "none",
+        backdropFilter: isMobile ? "blur(12px)" : "none",
+        WebkitBackdropFilter: isMobile ? "blur(12px)" : "none",
         transition: "all 0.4s ease",
       }}
     >
@@ -115,7 +142,7 @@ export default function SocialSidebar() {
           style={{
             color: isGroupHovered ? "#00f0ff" : "rgba(255, 255, 255, 0.4)",
             textDecoration: "none",
-            padding: "10px",
+            padding: isMobile ? "10px 16px" : "10px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -132,20 +159,22 @@ export default function SocialSidebar() {
         </a>
       ))}
 
-      {/* Vertical line */}
-      <div
-        className="social-line"
-        style={{
-          width: "1px",
-          height: "90px",
-          background: isGroupHovered
-            ? "linear-gradient(to bottom, rgba(0, 240, 255, 0.7), transparent)"
-            : "linear-gradient(to bottom, rgba(0, 240, 255, 0.4), transparent)",
-          marginTop: "12px",
-          transformOrigin: "top",
-          transition: "background 0.4s ease",
-        }}
-      />
+      {/* Vertical line — hidden on mobile */}
+      {!isMobile && (
+        <div
+          className="social-line"
+          style={{
+            width: "1px",
+            height: "90px",
+            background: isGroupHovered
+              ? "linear-gradient(to bottom, rgba(0, 240, 255, 0.7), transparent)"
+              : "linear-gradient(to bottom, rgba(0, 240, 255, 0.4), transparent)",
+            marginTop: "12px",
+            transformOrigin: "top",
+            transition: "background 0.4s ease",
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -1,7 +1,14 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import gsap from "gsap";
 
+// Detect touch device
+const isTouchDevice = () =>
+  typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
 export default function MagneticCursor() {
+  // Don't render on touch devices
+  if (isTouchDevice()) return null;
+
   const outerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLDivElement>(null);

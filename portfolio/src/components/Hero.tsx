@@ -1,5 +1,16 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= breakpoint);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [breakpoint]);
+  return isMobile;
+}
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -13,6 +24,7 @@ export default function Hero() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const coordRef = useRef<HTMLDivElement>(null);
   const reportingRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -138,9 +150,11 @@ export default function Hero() {
         width: "100%",
         height: "100vh",
         display: "flex",
-        alignItems: "center",
+        alignItems: isMobile ? "flex-start" : "center",
         justifyContent: "center",
         overflow: "hidden",
+        flexDirection: isMobile ? "column" : "row",
+        paddingTop: isMobile ? "25vh" : 0,
       }}
     >
       {/* HUD brackets */}
@@ -156,9 +170,15 @@ export default function Hero() {
       }} />
 
       {/* ===== LEFT — Name ===== */}
-      <div style={{
-        position: "absolute", left: "5vw", top: "50%", transform: "translateY(-50%)",
+      <div className="hero-left" style={{
+        position: isMobile ? "relative" : "absolute",
+        left: isMobile ? "auto" : "5vw",
+        top: isMobile ? "auto" : "50%",
+        transform: isMobile ? "none" : "translateY(-50%)",
         zIndex: 10, pointerEvents: "none",
+        textAlign: isMobile ? "center" : "left",
+        width: isMobile ? "100%" : "auto",
+        padding: isMobile ? "0 5vw" : 0,
       }}>
         <div ref={greetRef} style={{
           fontFamily: "'Rajdhani', sans-serif", fontSize: "clamp(0.85rem, 1.4vw, 1.1rem)",
@@ -169,7 +189,7 @@ export default function Hero() {
         </div>
 
         <div ref={firstNameRef} style={{
-          fontFamily: "'Orbitron', sans-serif", fontSize: "clamp(2.2rem, 5.5vw, 5rem)",
+          fontFamily: "'Orbitron', sans-serif", fontSize: isMobile ? "clamp(2rem, 10vw, 3rem)" : "clamp(2.2rem, 5.5vw, 5rem)",
           fontWeight: 700, color: "#fff", letterSpacing: "0.1em", lineHeight: 0.95,
           perspective: "1000px", textShadow: "0 0 15px rgba(255, 153, 51, 0.15)",
         }}>
@@ -177,7 +197,7 @@ export default function Hero() {
         </div>
 
         <div ref={lastNameRef} style={{
-          fontFamily: "'Orbitron', sans-serif", fontSize: "clamp(2.2rem, 5.5vw, 5rem)",
+          fontFamily: "'Orbitron', sans-serif", fontSize: isMobile ? "clamp(2rem, 10vw, 3rem)" : "clamp(2.2rem, 5.5vw, 5rem)",
           fontWeight: 700, color: "#fff", letterSpacing: "0.1em", lineHeight: 0.95,
           marginTop: "0.1em", perspective: "1000px", textShadow: "0 0 15px rgba(255, 153, 51, 0.15)",
         }}>
@@ -194,9 +214,15 @@ export default function Hero() {
       </div>
 
       {/* ===== RIGHT — Role ===== */}
-      <div style={{
-        position: "absolute", right: "5vw", top: "50%", transform: "translateY(-50%)",
-        zIndex: 10, textAlign: "right", pointerEvents: "none",
+      <div className="hero-right" style={{
+        position: isMobile ? "relative" : "absolute",
+        right: isMobile ? "auto" : "5vw",
+        top: isMobile ? "auto" : "50%",
+        transform: isMobile ? "none" : "translateY(-50%)",
+        zIndex: 10, textAlign: isMobile ? "center" : "right",
+        pointerEvents: "none",
+        width: isMobile ? "100%" : "auto",
+        marginTop: isMobile ? "30px" : 0,
       }}>
         <div ref={roleLabelRef} style={{
           fontFamily: "var(--iaf-font)", fontSize: "clamp(0.85rem, 1.4vw, 1.1rem)",
@@ -207,7 +233,7 @@ export default function Hero() {
         </div>
 
         <div ref={roleWord1Ref} className="role-glow" style={{
-          fontFamily: "var(--iaf-font)", fontSize: "clamp(2.5rem, 6vw, 5.5rem)",
+          fontFamily: "var(--iaf-font)", fontSize: isMobile ? "clamp(1.8rem, 9vw, 2.8rem)" : "clamp(2.5rem, 6vw, 5.5rem)",
           fontWeight: 800, color: "rgba(255, 255, 255, 0.08)", letterSpacing: "0.08em",
           lineHeight: 0.95, WebkitTextStroke: "1.5px rgba(0, 240, 255, 0.25)",
           textShadow: "0 0 15px rgba(0, 240, 255, 0.08)", opacity: 0,
@@ -216,7 +242,7 @@ export default function Hero() {
         </div>
 
         <div ref={roleWord2Ref} className="role-glow" style={{
-          fontFamily: "var(--iaf-font)", fontSize: "clamp(2.5rem, 6vw, 5.5rem)",
+          fontFamily: "var(--iaf-font)", fontSize: isMobile ? "clamp(1.8rem, 9vw, 2.8rem)" : "clamp(2.5rem, 6vw, 5.5rem)",
           fontWeight: 800, color: "var(--iaf-cyan)", letterSpacing: "0.08em",
           lineHeight: 0.95, marginTop: "0.05em",
           textShadow: "0 0 20px rgba(0, 240, 255, 0.25), 0 0 40px rgba(0, 240, 255, 0.08)",
@@ -228,7 +254,7 @@ export default function Hero() {
 
       {/* ===== BOTTOM — Subtitle ===== */}
       <div style={{
-        position: "absolute", bottom: "12vh", left: "50%", transform: "translateX(-50%)",
+        position: "absolute", bottom: isMobile ? "16vh" : "12vh", left: "50%", transform: "translateX(-50%)",
         zIndex: 10, textAlign: "center", pointerEvents: "none", width: "80%", maxWidth: "600px",
       }}>
         <p ref={subtitleRef} style={{
@@ -243,6 +269,7 @@ export default function Hero() {
       <div ref={coordRef} style={{
         position: "absolute", bottom: "5vh", right: "5vw", zIndex: 10,
         textAlign: "right", pointerEvents: "none", opacity: 0,
+        display: isMobile ? "none" : "block",
       }}>
         <div style={{ fontSize: "0.55rem", letterSpacing: "0.15em", color: "var(--iaf-dim)" }}>
           CALLSIGN: PHOENIX-01

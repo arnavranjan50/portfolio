@@ -1,7 +1,18 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
+
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= breakpoint);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [breakpoint]);
+  return isMobile;
+}
 
 const stats = [
   { label: "LOCATION", value: "Bengaluru, India" },
@@ -13,6 +24,7 @@ const stats = [
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -29,14 +41,17 @@ export default function About() {
 
   return (
     <section ref={sectionRef} id="about" className="iaf-section" style={{
-      display: "flex", alignItems: "center", justifyContent: "flex-end", paddingLeft: "48vw",
+      display: "flex", alignItems: "center",
+      justifyContent: isMobile ? "center" : "flex-end",
+      paddingLeft: isMobile ? "5vw" : "48vw",
+      paddingRight: isMobile ? "5vw" : "6vw",
     }}>
       <div className="hud-bracket hud-bracket--tl" />
       <div className="hud-bracket hud-bracket--tr" />
       <div className="hud-bracket hud-bracket--bl" />
       <div className="hud-bracket hud-bracket--br" />
 
-      <div style={{ maxWidth: "520px" }} ref={contentRef}>
+      <div style={{ maxWidth: "520px", width: "100%" }} ref={contentRef}>
         <div className="anim-in" style={{ opacity: 0 }}>
           <div className="section-label">Mission Briefing</div>
           <div className="section-code">SEC-002 // ABOUT</div>
@@ -44,7 +59,7 @@ export default function About() {
         <div className="accent-line anim-in" style={{ opacity: 0 }} />
 
         <h2 className="anim-in" style={{
-          fontFamily: "var(--iaf-font)", fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
+          fontFamily: "var(--iaf-font)", fontSize: "clamp(1.5rem, 3.5vw, 2.8rem)",
           fontWeight: 700, color: "#fff", lineHeight: 1.2, margin: "0 0 28px", opacity: 0,
         }}>
           Turning bold ideas into <span style={{ color: "var(--iaf-saffron)" }}>intelligent solutions</span>
@@ -57,7 +72,11 @@ export default function About() {
           Beyond building applications, I am passionate about bringing the tech community together.
         </p>
 
-        <div className="anim-in" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "32px", opacity: 0 }}>
+        <div className="anim-in" style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+          gap: "14px", marginBottom: "32px", opacity: 0,
+        }}>
           {stats.map((s) => (
             <div key={s.label} style={{
               padding: "12px 16px", background: "rgba(255,153,51,0.03)",
@@ -76,11 +95,14 @@ export default function About() {
         </div>
       </div>
 
-      <div style={{
-        position: "absolute", left: "46vw", top: "12%", bottom: "12%", width: "1px",
-        background: "linear-gradient(to bottom, transparent, rgba(255,153,51,0.12) 30%, rgba(255,153,51,0.12) 70%, transparent)",
-        pointerEvents: "none",
-      }} />
+      {/* Vertical divider — hidden on mobile */}
+      {!isMobile && (
+        <div style={{
+          position: "absolute", left: "46vw", top: "12%", bottom: "12%", width: "1px",
+          background: "linear-gradient(to bottom, transparent, rgba(255,153,51,0.12) 30%, rgba(255,153,51,0.12) 70%, transparent)",
+          pointerEvents: "none",
+        }} />
+      )}
     </section>
   );
 }

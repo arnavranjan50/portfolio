@@ -56,7 +56,7 @@ export default function Education() {
         <div className="accent-line" />
       </div>
 
-      <div style={{ position: "relative", paddingLeft: "50px", maxWidth: "700px" }}>
+      <div style={{ position: "relative", paddingLeft: "clamp(36px, 5vw, 50px)", maxWidth: "700px" }}>
         {/* Timeline line */}
         <div className="timeline-line" />
 
