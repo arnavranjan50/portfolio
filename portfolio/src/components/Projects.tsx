@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
@@ -10,6 +10,7 @@ const projects = [
     desc: "Deep learning-based image classification system using CNNs for real-time object detection and analysis.",
     tech: ["Python", "TensorFlow", "OpenCV"],
     status: "DEPLOYED",
+    video: "/VID-20260125-WA0001.mp4",
   },
   {
     code: "OPS-002",
@@ -40,7 +41,180 @@ function statusColor(s: string) {
   return "#FF9933";
 }
 
-function ProjectCard({ p, index }: { p: typeof projects[0]; index: number }) {
+/* ─── Video Modal ─── */
+function VideoModal({ videoSrc, onClose }: { videoSrc: string; onClose: () => void }) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    // Animate in
+    if (overlayRef.current) {
+      gsap.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" });
+    }
+    if (contentRef.current) {
+      gsap.fromTo(contentRef.current,
+        { scale: 0.85, opacity: 0, y: 30 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.5)", delay: 0.1 }
+      );
+    }
+    // Auto-play
+    videoRef.current?.play().catch(() => {});
+
+    // ESC to close
+    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [onClose]);
+
+  return (
+    <div
+      ref={overlayRef}
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 10000,
+        background: "rgba(0, 0, 0, 0.85)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        padding: "24px",
+      }}
+    >
+      <div
+        ref={contentRef}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          position: "relative",
+          width: "100%",
+          maxWidth: "900px",
+          background: "rgba(10, 14, 26, 0.95)",
+          border: "1px solid rgba(255, 153, 51, 0.4)",
+          borderRadius: "12px",
+          overflow: "hidden",
+          boxShadow: "0 0 60px rgba(255, 153, 51, 0.15), 0 0 120px rgba(0, 240, 255, 0.05)",
+          cursor: "default",
+        }}
+      >
+        {/* Header bar */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "14px 20px",
+          borderBottom: "1px solid rgba(255,153,51,0.15)",
+          background: "rgba(255, 153, 51, 0.03)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <span style={{
+              fontFamily: "'Orbitron', sans-serif",
+              fontSize: "0.65rem",
+              letterSpacing: "0.2em",
+              color: "#FF9933",
+              fontWeight: 700,
+            }}>
+              OPS-001
+            </span>
+            <span style={{
+              fontFamily: "'Rajdhani', sans-serif",
+              fontSize: "0.75rem",
+              color: "rgba(255,255,255,0.5)",
+              letterSpacing: "0.05em",
+            }}>
+              // MISSION FOOTAGE
+            </span>
+          </div>
+
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            data-magnetic
+            style={{
+              background: "none",
+              border: "1px solid rgba(255,153,51,0.3)",
+              borderRadius: "6px",
+              color: "#FF9933",
+              fontFamily: "'Orbitron', sans-serif",
+              fontSize: "0.6rem",
+              letterSpacing: "0.15em",
+              padding: "6px 14px",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,153,51,0.15)";
+              e.currentTarget.style.borderColor = "rgba(255,153,51,0.6)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "none";
+              e.currentTarget.style.borderColor = "rgba(255,153,51,0.3)";
+            }}
+          >
+            ✕ CLOSE
+          </button>
+        </div>
+
+        {/* Video */}
+        <div style={{ position: "relative", width: "100%", background: "#000" }}>
+          <video
+            ref={videoRef}
+            src={videoSrc}
+            controls
+            playsInline
+            style={{
+              display: "block",
+              width: "100%",
+              maxHeight: "75vh",
+              objectFit: "contain",
+            }}
+          />
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          padding: "10px 20px",
+          borderTop: "1px solid rgba(255,153,51,0.1)",
+          background: "rgba(255, 153, 51, 0.02)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+          <span style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontSize: "0.7rem",
+            color: "rgba(255,255,255,0.3)",
+            letterSpacing: "0.08em",
+          }}>
+            Animal Detection System — YOLOv11n with CLAHE
+          </span>
+          <span style={{
+            fontFamily: "'Orbitron', sans-serif",
+            fontSize: "0.55rem",
+            color: "#138808",
+            letterSpacing: "0.15em",
+          }}>
+            ● DEPLOYED
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Project Card ─── */
+function ProjectCard({
+  p,
+  index,
+  onVideoClick,
+}: {
+  p: typeof projects[0];
+  index: number;
+  onVideoClick?: (src: string) => void;
+}) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,6 +224,8 @@ function ProjectCard({ p, index }: { p: typeof projects[0]; index: number }) {
       scrollTrigger: { trigger: cardRef.current, start: "top 85%", toggleActions: "play none none reverse" },
     });
   }, [index]);
+
+  const hasVideo = !!p.video;
 
   const onEnter = () => {
     const el = cardRef.current;
@@ -71,14 +247,21 @@ function ProjectCard({ p, index }: { p: typeof projects[0]; index: number }) {
     if (t) t.style.color = "#fff";
   };
 
+  const handleClick = () => {
+    if (hasVideo && onVideoClick) {
+      onVideoClick(p.video!);
+    }
+  };
+
   const sc = statusColor(p.status);
 
   return (
     <div
       ref={cardRef}
-      data-cursor-label="View Mission"
+      data-cursor-label={hasVideo ? "▶ Play" : "View Mission"}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
+      onClick={handleClick}
       style={{
         background: "rgba(10, 14, 26, 0.7)",
         border: "1px solid rgba(255,153,51,0.15)",
@@ -87,7 +270,7 @@ function ProjectCard({ p, index }: { p: typeof projects[0]; index: number }) {
         position: "relative",
         overflow: "hidden",
         opacity: 0,
-        cursor: "none",
+        cursor: hasVideo ? "pointer" : "none",
         transition: "transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease",
       }}
     >
@@ -124,7 +307,7 @@ function ProjectCard({ p, index }: { p: typeof projects[0]; index: number }) {
         {p.desc}
       </p>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
         {p.tech.map((t) => (
           <span key={t} style={{
             fontFamily: "'Orbitron', sans-serif", fontSize: "0.55rem",
@@ -135,14 +318,42 @@ function ProjectCard({ p, index }: { p: typeof projects[0]; index: number }) {
             {t}
           </span>
         ))}
+
+        {/* Play indicator for video projects */}
+        {hasVideo && (
+          <span style={{
+            marginLeft: "auto",
+            fontFamily: "'Orbitron', sans-serif",
+            fontSize: "0.55rem",
+            letterSpacing: "0.12em",
+            color: "rgba(255,153,51,0.6)",
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+          }}>
+            ▶ WATCH DEMO
+          </span>
+        )}
       </div>
     </div>
   );
 }
 
+/* ─── Projects Section ─── */
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+
+  const handleVideoClick = useCallback((src: string) => {
+    setActiveVideo(src);
+    document.body.style.overflow = "hidden";
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setActiveVideo(null);
+    document.body.style.overflow = "";
+  }, []);
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -153,28 +364,33 @@ export default function Projects() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="projects" className="iaf-section" style={{ paddingTop: "120px" }}>
-      <div className="hud-bracket hud-bracket--tl" />
-      <div className="hud-bracket hud-bracket--tr" />
-      <div className="hud-bracket hud-bracket--bl" />
-      <div className="hud-bracket hud-bracket--br" />
+    <>
+      <section ref={sectionRef} id="projects" className="iaf-section" style={{ paddingTop: "120px" }}>
+        <div className="hud-bracket hud-bracket--tl" />
+        <div className="hud-bracket hud-bracket--tr" />
+        <div className="hud-bracket hud-bracket--bl" />
+        <div className="hud-bracket hud-bracket--br" />
 
-      <div ref={headerRef} style={{ opacity: 0, marginBottom: "48px" }}>
-        <div style={{
-          fontFamily: "'Orbitron', sans-serif", fontSize: "0.75rem",
-          letterSpacing: "0.35em", color: "#FF9933", fontWeight: 700, marginBottom: "6px",
-        }}>
-          MISSION LOG
+        <div ref={headerRef} style={{ opacity: 0, marginBottom: "48px" }}>
+          <div style={{
+            fontFamily: "'Orbitron', sans-serif", fontSize: "0.75rem",
+            letterSpacing: "0.35em", color: "#FF9933", fontWeight: 700, marginBottom: "6px",
+          }}>
+            MISSION LOG
+          </div>
+          <div className="section-code">SEC-003 // PROJECTS</div>
+          <div className="accent-line" />
         </div>
-        <div className="section-code">SEC-003 // PROJECTS</div>
-        <div className="accent-line" />
-      </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
-        {projects.map((p, i) => (
-          <ProjectCard key={p.code} p={p} index={i} />
-        ))}
-      </div>
-    </section>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
+          {projects.map((p, i) => (
+            <ProjectCard key={p.code} p={p} index={i} onVideoClick={handleVideoClick} />
+          ))}
+        </div>
+      </section>
+
+      {/* Video Modal */}
+      {activeVideo && <VideoModal videoSrc={activeVideo} onClose={handleClose} />}
+    </>
   );
 }
