@@ -1,0 +1,331 @@
+/* ===== IAF Design System ===== */
+:root {
+  --iaf-bg: #050508;
+  --iaf-panel: #0a0e1a;
+  --iaf-saffron: #FF9933;
+  --iaf-cyan: #00f0ff;
+  --iaf-green: #138808;
+  --iaf-text: #ffffff;
+  --iaf-muted: rgba(255, 255, 255, 0.5);
+  --iaf-dim: rgba(255, 255, 255, 0.25);
+  --iaf-border: rgba(255, 153, 51, 0.15);
+  --iaf-cyan-border: rgba(0, 240, 255, 0.15);
+  --iaf-font: 'Space Grotesk', sans-serif;
+}
+
+/* ===== Reset ===== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  cursor: none;
+}
+
+body {
+  font-family: var(--iaf-font);
+  background: var(--iaf-bg);
+  color: var(--iaf-text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a, button { cursor: none; }
+
+::selection {
+  background: rgba(255, 153, 51, 0.3);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--iaf-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 153, 51, 0.3);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 153, 51, 0.5);
+}
+
+/* ===== Grid overlay (subtle tactical grid) ===== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* ===== Section base ===== */
+.iaf-section {
+  position: relative;
+  min-height: 100vh;
+  padding: 100px 6vw;
+  overflow: hidden;
+}
+
+/* ===== Section label ===== */
+.section-label {
+  font-family: var(--iaf-font);
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  color: var(--iaf-saffron);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.section-code {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--iaf-dim);
+  margin-bottom: 24px;
+}
+
+/* ===== Accent line ===== */
+.accent-line {
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--iaf-saffron), transparent);
+  margin-bottom: 28px;
+}
+
+.accent-line--cyan {
+  background: linear-gradient(90deg, var(--iaf-cyan), transparent);
+}
+
+/* ===== HUD corner brackets ===== */
+.hud-bracket {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.hud-bracket--tl {
+  top: 24px; left: 24px;
+  border-top: 2px solid rgba(255, 153, 51, 0.25);
+  border-left: 2px solid rgba(255, 153, 51, 0.25);
+}
+
+.hud-bracket--tr {
+  top: 24px; right: 24px;
+  border-top: 2px solid rgba(255, 153, 51, 0.25);
+  border-right: 2px solid rgba(255, 153, 51, 0.25);
+}
+
+.hud-bracket--bl {
+  bottom: 24px; left: 24px;
+  border-bottom: 2px solid rgba(255, 153, 51, 0.25);
+  border-left: 2px solid rgba(255, 153, 51, 0.25);
+}
+
+.hud-bracket--br {
+  bottom: 24px; right: 24px;
+  border-bottom: 2px solid rgba(255, 153, 51, 0.25);
+  border-right: 2px solid rgba(255, 153, 51, 0.25);
+}
+
+/* ===== Glassmorphism panel ===== */
+.glass-panel {
+  background: rgba(10, 14, 26, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--iaf-border);
+  border-radius: 8px;
+}
+
+.glass-panel--cyan {
+  border-color: var(--iaf-cyan-border);
+}
+
+/* ===== Hero Section ===== */
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60vw;
+  height: 60vh;
+  background: radial-gradient(ellipse, rgba(255, 153, 51, 0.03) 0%, transparent 70%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ===== Animations ===== */
+.radar-sweep {
+  animation: radarSweep 2.5s linear infinite;
+}
+
+@keyframes radarSweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.terminal-cursor {
+  display: inline-block;
+  animation: cursorBlink 0.8s step-end infinite;
+  color: rgba(255, 153, 51, 0.8);
+  margin-left: 2px;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes fadeInLine {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* ===== Nav & Button Glow ===== */
+.nav-link {
+  transition: color 0.3s ease, text-shadow 0.3s ease !important;
+}
+
+.nav-link:hover {
+  color: var(--iaf-cyan) !important;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.5), 0 0 24px rgba(0, 240, 255, 0.2);
+}
+
+.resume-btn {
+  transition: all 0.3s ease !important;
+}
+
+.resume-btn:hover {
+  color: var(--iaf-saffron) !important;
+  background: rgba(255, 153, 51, 0.08) !important;
+  border-color: var(--iaf-saffron) !important;
+  box-shadow: 0 0 20px rgba(255, 153, 51, 0.3), 0 0 40px rgba(255, 153, 51, 0.1), inset 0 0 12px rgba(255, 153, 51, 0.05) !important;
+  text-shadow: 0 0 10px rgba(255, 153, 51, 0.6);
+}
+
+/* ===== Skill bar fill animation ===== */
+@keyframes fillBar {
+  from { width: 0; }
+}
+
+/* ===== Tag style ===== */
+.iaf-tag {
+  font-family: var(--iaf-font);
+  font-size: 0.75rem;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: rgba(0, 240, 255, 0.8);
+  background: rgba(0, 240, 255, 0.03);
+  letter-spacing: 0.08em;
+  transition: all 0.3s ease;
+}
+
+.iaf-tag:hover {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+}
+
+/* ===== Mission card ===== */
+.mission-card {
+  background: rgba(10, 14, 26, 0.7);
+  border: 1px solid var(--iaf-border);
+  border-radius: 8px;
+  padding: 28px;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mission-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--iaf-saffron), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.mission-card:hover {
+  border-color: rgba(255, 153, 51, 0.4);
+}
+
+.mission-card:hover::before {
+  opacity: 1;
+}
+
+/* ===== Timeline ===== */
+.timeline-line {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--iaf-saffron), rgba(255, 153, 51, 0.1));
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--iaf-bg);
+  border: 2px solid var(--iaf-saffron);
+  position: absolute;
+  left: 15px;
+  box-shadow: 0 0 10px rgba(255, 153, 51, 0.3);
+}
+
+/* ===== Contact input ===== */
+.iaf-input {
+  width: 100%;
+  background: rgba(10, 14, 26, 0.8);
+  border: 1px solid var(--iaf-border);
+  border-radius: 4px;
+  padding: 12px 16px;
+  color: var(--iaf-text);
+  font-family: var(--iaf-font);
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.iaf-input:focus {
+  border-color: var(--iaf-saffron);
+  box-shadow: 0 0 15px rgba(255, 153, 51, 0.15), inset 0 0 8px rgba(255, 153, 51, 0.03);
+}
+
+.iaf-input::placeholder {
+  color: var(--iaf-dim);
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+}
