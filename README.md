@@ -153,17 +153,7 @@ Platform helping students:
 
 ---
 
-# 📈 GitHub Analytics
 
-<div align="center">
-
-<img height="180em" src="https://github-readme-stats.vercel.app/api?username=arnavranjan50&show_icons=true&theme=tokyonight&border_radius=15" />
-
-<img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=arnavranjan50&layout=compact&theme=tokyonight&border_radius=15" />
-
-</div>
-
----
 
 # 🔥 Contribution Streak
 
@@ -181,7 +171,6 @@ Platform helping students:
 - 🥈 Silver Medalist — IMO
 - 🚀 Built multiple AI-powered projects
 - 💡 Passionate about innovation & leadership
-- 🇮🇳 Dedicated toward serving the nation
 
 ---
 
